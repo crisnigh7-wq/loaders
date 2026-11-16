@@ -1,0 +1,29 @@
+local keySystem = loadstring(game:HttpGet("https://sdk.luaprot.net/key-ui.lua"))()
+keySystem.scriptId = "80870892533825024514"
+keySystem.keyURL = "https://luaprot.net/ad/9923fe81" -- linkvertise
+keySystem.scriptName = "walls" -- paid version
+
+local FILE_NAME = "Walls_SavedKey_" .. keySystem.scriptId .. ".txt"
+
+-- 1. Check for a saved key and validate it before showing the UI
+if isfile and readfile and isfile(FILE_NAME) then
+	local savedKey = readfile(FILE_NAME)
+	keySystem.sdk.scriptId = keySystem.scriptId
+	
+	local result = keySystem.sdk:checkKey(savedKey)
+	if result and result.status == "VALID" then
+		keySystem.sdk:loadScript()
+		return
+	end
+end
+
+-- 2. Save the key locally when the user enters a valid key in the UI
+keySystem.validCallback = function(enteredKey)
+	if writefile then
+		writefile(FILE_NAME, enteredKey)
+	end
+	keySystem.sdk:loadScript()
+end
+
+-- 3. Open the key UI only if no valid saved key was found
+keySystem:show()
